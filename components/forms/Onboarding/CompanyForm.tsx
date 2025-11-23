@@ -1,4 +1,4 @@
-import { set, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { companySchema, CompanySchemaType } from "@/app/utils/zodSchema";
 import {
@@ -24,8 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/components/general/UploadThingExport";
 import { createCompany } from "@/app/actions";
 import { useState } from "react";
-import { GeneralSubmitButton } from "@/components/general/SubmitButton";
-import { Computer, Divide, Loader, X } from "lucide-react";
+import { Computer, Loader, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 

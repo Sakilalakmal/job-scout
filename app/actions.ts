@@ -3,7 +3,12 @@
 import { redirect } from "next/navigation";
 import { prisma } from "./utils/db";
 import { requiredUser } from "./utils/required-user";
-import { companySchema, CompanySchemaType } from "./utils/zodSchema";
+import {
+  companySchema,
+  CompanySchemaType,
+  jobScouterSchema,
+  JobScouterSchemaType,
+} from "./utils/zodSchema";
 
 export async function createCompany(data: CompanySchemaType) {
   const session = await requiredUser();
@@ -27,5 +32,28 @@ export async function createCompany(data: CompanySchemaType) {
       },
     },
   });
+  return redirect("/");
+}
+
+export async function createJobScouter(data: JobScouterSchemaType) {
+  const session = await requiredUser();
+
+  const validateData = jobScouterSchema.parse(data);
+
+  await prisma.user.update({
+    where: {
+      id: session?.id,
+    },
+    data: {
+      onBoardingCompleted: true,
+      userType: "JOBSCOUTER",
+      JobScouter: {
+        create: {
+          ...validateData,
+        },
+      },
+    },
+  });
+
   return redirect("/");
 }
