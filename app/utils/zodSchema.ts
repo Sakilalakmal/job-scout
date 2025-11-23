@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 export const companySchema = z.object({
@@ -10,3 +11,14 @@ export const companySchema = z.object({
 });
 
 export type CompanySchemaType = z.infer<typeof companySchema>;
+
+export const jobScouterSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters long"),
+  about: z
+    .string()
+    .min(10, "About must be at least 10 characters long")
+    .optional(),
+  resume: z.string().url("Please upload your resume").optional(),
+});
+
+export type JobScouterSchemaType = z.infer<typeof jobScouterSchema>;
