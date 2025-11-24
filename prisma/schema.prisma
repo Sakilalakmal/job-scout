@@ -22,6 +22,41 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  userType  UserType?
+
+  onBoardingCompleted Boolean       @default(false)
+
+  Company Company?
+  JobScouter JobScouter?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  about       String?
+  website     String?
+  logo        String?
+  location    String?
+  XAccount   String   @unique
+
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JobScouter {
+  id          String   @id @default(cuid())
+  name        String
+  about       String?
+  resume      String?
+
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
  
   createdAt DateTime @default(now())
@@ -66,4 +101,10 @@ model VerificationToken {
  
   @@id([identifier, token])
 }
+
+enum UserType {
+  COMPANY
+  JOBSCOUTER
+}
+
  

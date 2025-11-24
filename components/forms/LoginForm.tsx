@@ -1,5 +1,4 @@
 import { auth, signIn } from "@/app/utils/auth";
-import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -293,7 +292,7 @@ export async function LoginForm() {
                 "use server";
 
                 await signIn("github", {
-                  redirectTo: "/",
+                  redirectTo: "/onboarding",
                 });
               }}
             >
@@ -309,7 +308,14 @@ export async function LoginForm() {
               />
             </form>
 
-            <form>
+            <form
+              action={async () => {
+                "use server";
+                await signIn("google", {
+                  redirectTo: "/onboarding",
+                });
+              }}
+            >
               {/* <Button className="w-full" variant={"outline"}>
                 <Google className="size-4" />
                 Login with Google
