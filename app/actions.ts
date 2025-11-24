@@ -6,6 +6,8 @@ import { requiredUser } from "./utils/required-user";
 import {
   companySchema,
   CompanySchemaType,
+  jobPostSchema,
+  JobPostSchemaType,
   jobScouterSchema,
   JobScouterSchemaType,
 } from "./utils/zodSchema";
@@ -87,4 +89,45 @@ export async function createJobScouter(data: JobScouterSchemaType) {
   });
 
   return redirect("/");
+}
+
+export async function createJobPost(data: JobPostSchemaType) {
+  const user = await requiredUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Request denied by Arcjet...");
+  }
+
+  const validateData = jobPostSchema.parse(data);
+
+  const company = await prisma.company.findUnique({
+    where: {
+      userId: user?.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!company?.id) {
+    return redirect("/");
+  }
+
+  await prisma.jobPost.create({
+    data: {
+      jobDescription: validateData.jobDescription,
+      jobTitle: validateData.jobTitle,
+      location: validateData.location,
+      employmentType: validateData.employmentType,
+      salaryFrom: validateData.salaryFrom,
+      salaryTo: validateData.salaryTo,
+      listingDuration: validateData.listingDuration,
+      benefits: validateData.benefits,
+      companyId: company.id,
+    },
+  });
 }
