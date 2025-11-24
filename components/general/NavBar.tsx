@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./Theme-toggler";
 import { auth, signOut } from "@/app/utils/auth";
+import { UserDropDown } from "./UserDropDown";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -140,9 +141,19 @@ export default async function NavBar() {
             </Link>
           )}
 
-          <Button size="sm" className="text-sm">
-            <Link href="#">Get Started</Link>
-          </Button>
+          <Link
+            className={buttonVariants({})}
+            href={session?.user?.id ? "/post-job" : "/login"}
+          >
+            Get Started
+          </Link>
+          {session?.user && (
+            <UserDropDown
+              avatar={session.user.image as string}
+              email={session.user.email as string}
+              name={session.user.name as string}
+            />
+          )}
         </div>
       </div>
     </header>
