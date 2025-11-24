@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+import { CreateJobPostForm } from "@/components/forms/CreateJobPostForm";
 import {
   Card,
   CardContent,
@@ -107,6 +108,9 @@ export default function PostJobPage() {
         <CardHeader>
           <CardTitle>Create a Job form</CardTitle>
         </CardHeader>
+        <CardContent>
+            <CreateJobPostForm/>
+        </CardContent>
       </Card>
 
       <div className="col-span-1">
