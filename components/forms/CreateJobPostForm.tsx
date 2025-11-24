@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -24,6 +24,8 @@ import {
 } from "../ui/select";
 import { countryList } from "@/app/utils/coutries-list";
 import { SalaryRangeSelector } from "../general/SalaryRangeSelector";
+import { JobDescriptionEditor } from "../RichTextEditor/JobDescriptionEditor";
+import { useForm } from "react-hook-form";
 
 export function CreateJobPostForm() {
   const form = useForm<JobPostSchemaType>({
@@ -153,6 +155,19 @@ export function CreateJobPostForm() {
                 </FormControl>
               </FormItem>
             </div>
+            <FormField
+              control={form.control}
+              name="jobDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job description</FormLabel>
+                  <FormControl>
+                    <JobDescriptionEditor field={field as any} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
       </form>
