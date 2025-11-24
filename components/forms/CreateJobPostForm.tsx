@@ -31,8 +31,12 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { UploadDropzone } from "../general/UploadThingExport";
-import { X } from "lucide-react";
+import { Compass, Loader, X } from "lucide-react";
 import { JobListingDurationSelector } from "../general/JobListingDurationSelector";
+import { createJobPost } from "@/app/actions";
+import { useState } from "react";
+import { set } from "zod";
+import { toast } from "sonner";
 
 interface CreateJobPostFormProps {
   Companylocation: string | null;
@@ -51,6 +55,7 @@ export function CreateJobPostForm({
   CompanyXAccount,
   Companylocation,
 }: CreateJobPostFormProps) {
+  const [pending, setPending] = useState(false);
   const form = useForm<JobPostSchemaType>({
     resolver: zodResolver(jobPostSchema),
     defaultValues: {
@@ -72,7 +77,18 @@ export function CreateJobPostForm({
   });
 
   async function onSubmit(data: JobPostSchemaType) {
-    console.log("form data", data);
+    try {
+      setPending(true);
+      await createJobPost(data);
+      toast.success("Job post created successfully!");
+      form.reset();
+    } catch (error) {
+      if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
+        console.log("Failed to create company:", error.message);
+      }
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
@@ -390,7 +406,19 @@ export function CreateJobPostForm({
             />
           </CardContent>
         </Card>
-        <Button type="submit">Submit Job Post</Button>
+        <Button disabled={pending} type="submit">
+          {pending ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              creating...
+            </>
+          ) : (
+            <>
+              <Compass className="size-4" />
+              Submit Job Post
+            </>
+          )}
+        </Button>
       </form>
     </Form>
   );
