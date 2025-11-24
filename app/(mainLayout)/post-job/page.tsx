@@ -1,4 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
+import { prisma } from "@/app/utils/db";
+import { requiredUser } from "@/app/utils/required-user";
 import { CreateJobPostForm } from "@/components/forms/CreateJobPostForm";
 import {
   Card,
@@ -10,6 +12,7 @@ import {
 import arcjet from "@/public/arcjet.jpg";
 import inngest from "@/public/inngest.png";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const companies = [
   {
@@ -101,7 +104,35 @@ const statistics = [
   },
 ];
 
-export default function PostJobPage() {
+async function getCompanyData(userId: string) {
+  const company = await prisma.company.findUnique({
+    where: {
+      userId: userId,
+    },
+    select: {
+      name: true,
+      location: true,
+      about: true,
+      logo: true,
+      XAccount: true,
+      website: true,
+    },
+  });
+
+  if (!company) {
+    redirect("/");
+    console.log("no job");
+    
+  }
+
+  return company;
+}
+
+export default async function PostJobPage() {
+  const session = await requiredUser();
+
+  const data = await getCompanyData(session?.id as string);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-5">
       <Card className="col-span-1 lg:col-span-2">
@@ -109,7 +140,14 @@ export default function PostJobPage() {
           <CardTitle>Create a Job form</CardTitle>
         </CardHeader>
         <CardContent>
-            <CreateJobPostForm/>
+          <CreateJobPostForm
+            CompanyAbout={data?.about}
+            CompanyLogo={data?.logo}
+            CompanyName={data?.name}
+            CompanyWebsite={data?.website}
+            CompanyXAccount={data?.XAccount}
+            Companylocation={data?.location}
+          />
         </CardContent>
       </Card>
 
