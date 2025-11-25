@@ -26,7 +26,7 @@ interface JobCardProps {
 
 export function JobCard({ jobData }: JobCardProps) {
   return (
-    <Link href={`/job`}>
+    <Link href={`/job/${jobData.id}`}>
       <Card className="shadow-lg transition-all duration-300 hover:border-primary hover:bg-primary/10">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
