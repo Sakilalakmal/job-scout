@@ -1,9 +1,15 @@
+import { JobFilter } from "@/components/general/JobFilter";
+import { JobListingView } from "@/components/general/JobListingView";
+import { Card } from "@/components/ui/card";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <h1>hello job seeker</h1>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+      <JobFilter />
+      <div className="col-span-2 flex flex-col gap-6">
+        <JobListingView />
+      </div>
     </div>
   );
 }
