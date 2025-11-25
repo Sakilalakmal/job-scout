@@ -16,6 +16,7 @@ import { request } from "@arcjet/next";
 import { stripe } from "./utils/stripe";
 import { jobListingDurations } from "./utils/job-listing-duration";
 import { inngest } from "./utils/inngest/client";
+import { revalidatePath } from "next/cache";
 
 const aj = arcjet
   .withRule(
@@ -199,4 +200,48 @@ export async function createJobPost(data: JobPostSchemaType) {
   });
 
   return redirect(stripeSession.url as string);
+}
+
+export async function addJobPostToFavorite(jobId: string) {
+  const user = await requiredUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Request denied by Arcjet...");
+  }
+
+  await prisma.favoriteJobPosts.create({
+    data: {
+      jobPostId: jobId,
+      userId: user?.id as string,
+    },
+  });
+
+  revalidatePath(`/job/${jobId}`);
+}
+
+export async function removeJobPostFromFavorite(jobId: string) {
+  const user = await requiredUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Request denied by Arcjet...");
+  }
+
+  await prisma.favoriteJobPosts.delete({
+    where: {
+      jobPostId_userId: {
+        jobPostId: jobId,
+        userId: user?.id as string,
+      },
+    },
+  });
+
+  revalidatePath(`/job/${jobId}`);
 }
