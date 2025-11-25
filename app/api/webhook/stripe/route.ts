@@ -1,5 +1,6 @@
 import { prisma } from "@/app/utils/db";
 import { stripe } from "@/app/utils/stripe";
+import { inngest } from "@/app/utils/inngest/client";
 import { headers } from "next/headers";
 import Stripe from "stripe";
 
@@ -30,9 +31,16 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const customerId = session.customer;
     const jobId = session.metadata?.jobId;
+    const listingDuration = session.metadata?.listingDuration;
 
     if (!jobId) {
       return new Response("No jobId in session metadata", { status: 400 });
+    }
+
+    if (!listingDuration) {
+      return new Response("No listingDuration in session metadata", {
+        status: 400,
+      });
     }
 
     const company = await prisma.user.findFirst({
@@ -59,6 +67,15 @@ export async function POST(req: Request) {
       },
       data: {
         status: "ACTIVE",
+      },
+    });
+
+    // Trigger Inngest event to handle job expiration after payment is successful
+    await inngest.send({
+      name: "job/created",
+      data: {
+        jobId,
+        listingDuration: parseInt(listingDuration),
       },
     });
   }

@@ -15,6 +15,7 @@ import arcjet, { detectBot, shield } from "./utils/arcjet";
 import { request } from "@arcjet/next";
 import { stripe } from "./utils/stripe";
 import { jobListingDurations } from "./utils/job-listing-duration";
+import { inngest } from "./utils/inngest/client";
 
 const aj = arcjet
   .withRule(
@@ -190,6 +191,7 @@ export async function createJobPost(data: JobPostSchemaType) {
     ],
     metadata: {
       jobId: jobPost.id,
+      listingDuration: validateData.listingDuration.toString(),
     },
     mode: "payment",
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
