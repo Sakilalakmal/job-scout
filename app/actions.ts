@@ -145,7 +145,7 @@ export async function createJobPost(data: JobPostSchemaType) {
     });
   }
 
-  await prisma.jobPost.create({
+  const jobPost = await prisma.jobPost.create({
     data: {
       jobDescription: validateData.jobDescription,
       jobTitle: validateData.jobTitle,
@@ -156,6 +156,9 @@ export async function createJobPost(data: JobPostSchemaType) {
       listingDuration: validateData.listingDuration,
       benefits: validateData.benefits,
       companyId: company.id,
+    },
+    select: {
+      id: true,
     },
   });
 
@@ -185,6 +188,9 @@ export async function createJobPost(data: JobPostSchemaType) {
         quantity: 1,
       },
     ],
+    metadata: {
+      jobId: jobPost.id,
+    },
     mode: "payment",
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/cancel`,
