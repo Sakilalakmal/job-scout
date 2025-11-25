@@ -2,8 +2,9 @@
 
 import { useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
-import { Divide, Loader } from "lucide-react";
+import { Divide, Heart, Loader } from "lucide-react";
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface GeneralSubmitButtonProps {
   text: string;
@@ -39,6 +40,40 @@ export function GeneralSubmitButton({
         <>
           {icon && <div>{icon}</div>}
           <span>{text}</span>
+        </>
+      )}
+    </Button>
+  );
+}
+
+export function AddToFavButton({ savedJob }: { savedJob: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" variant={"outline"} disabled={pending}>
+      {pending ? (
+        <>
+          <Loader className="size-4 animate-spin" />
+          <span>adding...</span>
+        </>
+      ) : (
+        <>
+          {savedJob ? (
+            <>
+              <Heart
+                className={cn(
+                  savedJob ? "fill-current text-red-500" : "",
+                  "size-4"
+                )}
+              />
+              <span>Added to Fav</span>
+            </>
+          ) : (
+            <>
+              <Heart className="size-4" />
+              <span>Add To Fav</span>
+            </>
+          )}
         </>
       )}
     </Button>

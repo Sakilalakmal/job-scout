@@ -31,6 +31,8 @@ model User {
   Company    Company?
   JobScouter JobScouter?
 
+  FavoriteJobPosts FavoriteJobPosts[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -128,10 +130,27 @@ model JobPost {
 
   Company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId String
+
+  FavoriteJobPosts FavoriteJobPosts[]
 }
 
 enum JobPostStatus {
   DRAFT
   ACTIVE
   EXPIRED
+}
+
+model FavoriteJobPosts {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  JobPost   JobPost @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+  jobPostId String
+
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([jobPostId, userId])
 }
