@@ -245,3 +245,66 @@ export async function removeJobPostFromFavorite(jobId: string) {
 
   revalidatePath(`/job/${jobId}`);
 }
+
+export async function EditJobPost(data: JobPostSchemaType, jobId: string) {
+  const user = await requiredUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Request denied by Arcjet...");
+  }
+
+  const validateData = jobPostSchema.parse(data);
+
+  await prisma.jobPost.update({
+    where: {
+      id: jobId,
+      Company: {
+        userId: user?.id,
+      },
+    },
+    data: {
+      jobDescription: validateData.jobDescription,
+      jobTitle: validateData.jobTitle,
+      location: validateData.location,
+      employmentType: validateData.employmentType,
+      salaryFrom: validateData.salaryFrom,
+      salaryTo: validateData.salaryTo,
+      listingDuration: validateData.listingDuration,
+      benefits: validateData.benefits,
+    },
+  });
+
+  return redirect("/my-jobs");
+}
+
+export async function deleteJobPosts(jobId: string) {
+  const user = await requiredUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Request denied by Arcjet...");
+  }
+
+  await prisma.jobPost.delete({
+    where: {
+      id: jobId,
+      Company: {
+        userId: user?.id,
+      },
+    },
+  });
+
+  await inngest.send({
+    name: "job/cancel.expired",
+    data: {
+      jobId: jobId,
+    },
+  });
+}
