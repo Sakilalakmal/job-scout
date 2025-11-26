@@ -1,5 +1,6 @@
 import { auth } from "@/app/utils/auth";
 import { prisma } from "@/app/utils/db";
+import { CopLinkMenuItem } from "@/components/general/Copylink";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -103,7 +104,7 @@ export default async function MyJobsPage() {
                     <TableHead>Job Title</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created At</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -125,7 +126,7 @@ export default async function MyJobsPage() {
                           listing.status.slice(1).toLowerCase()}
                       </TableCell>
                       <TableCell>{listing.createAt.toDateString()}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant={"ghost"} size={"icon"}>
@@ -135,17 +136,14 @@ export default async function MyJobsPage() {
                           <DropdownMenuContent>
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                              <Link href={`my-job/${listing.id}/edit`}>
+                              <Link href={`my-jobs/${listing.id}/edit`}>
                                 <Pencil className="size-4" />
                                 Edit
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`my-job/${listing.id}/edit`}>
-                                <Copy className="size-4" />
-                                Copy job URL
-                              </Link>
-                            </DropdownMenuItem>
+                            <CopLinkMenuItem
+                              jobUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/job/${listing.id}`}
+                            />
                             <DropdownMenuSeparator />
 
                             <DropdownMenuItem asChild>
@@ -153,9 +151,9 @@ export default async function MyJobsPage() {
                                 className={buttonVariants({
                                   variant: "destructive",
                                   size: "sm",
-                                  className:"w-full"
+                                  className: "w-full",
                                 })}
-                                href={`my-job/${listing.id}/delete`}
+                                href={`my-jobs/${listing.id}/delete`}
                               >
                                 <Trash className="size-4 text-white" />
                                 Delete

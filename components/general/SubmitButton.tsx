@@ -19,6 +19,7 @@ interface GeneralSubmitButtonProps {
     | undefined;
   width?: string;
   icon?: ReactNode;
+  pendingText?: string;
 }
 
 export function GeneralSubmitButton({
@@ -26,6 +27,7 @@ export function GeneralSubmitButton({
   variant,
   width,
   icon,
+  pendingText = "Submitting...",
 }: GeneralSubmitButtonProps) {
   const { pending } = useFormStatus();
 
@@ -34,7 +36,7 @@ export function GeneralSubmitButton({
       {pending ? (
         <>
           <Loader className="size-4 animate-spin" />
-          <span>login in...</span>
+          <span>{pendingText}</span>
         </>
       ) : (
         <>
