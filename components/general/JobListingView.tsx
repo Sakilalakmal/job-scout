@@ -10,18 +10,31 @@ import {
 import { Folder } from "lucide-react";
 import { JobCard } from "./JobCard";
 import { MainPagination } from "./MainPagination";
+import { JobPostStatus } from "@prisma/client";
 
-async function getCompanyJobPostingData(
-  page: number = 1,
-  pageSize: number = 2
-) {
+async function getCompanyJobPostingData({
+  page = 1,
+  pageSize = 2,
+  jobTypes = [],
+}: {
+  page: number;
+  pageSize: number;
+  jobTypes?: string[];
+}) {
   const skip = (page - 1) * pageSize;
+
+  const where = {
+    status: JobPostStatus.ACTIVE,
+    ...(jobTypes.length > 0 && {
+      employmentType: {
+        in: jobTypes,
+      },
+    }),
+  };
 
   const [jobpostData, totalCount] = await Promise.all([
     await prisma.jobPost.findMany({
-      where: {
-        status: "ACTIVE",
-      },
+      where: where,
       take: pageSize,
       skip: skip,
       select: {
@@ -59,10 +72,18 @@ async function getCompanyJobPostingData(
   };
 }
 
-export async function JobListingView({ currentPage }: { currentPage: number }) {
-  const { jobpostData, totalCount } = await getCompanyJobPostingData(
-    currentPage
-  );
+export async function JobListingView({
+  currentPage,
+  jobTypes,
+}: {
+  currentPage: number;
+  jobTypes?: string[];
+}) {
+  const { jobpostData, totalCount } = await getCompanyJobPostingData({
+    page: currentPage,
+    pageSize: 2,
+    jobTypes: jobTypes || [],
+  });
 
   return (
     <>
