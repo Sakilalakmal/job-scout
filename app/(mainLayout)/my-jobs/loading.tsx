@@ -59,7 +59,7 @@ export default function LoadingMyJobs() {
                 </TableCell>
 
                 <TableCell>
-                  <Skeleton className="size-8 rounded-md mx-auto" />
+                  <Skeleton className="size-8 rounded-md ml-auto" />
                 </TableCell>
               </TableRow>
             ))}
