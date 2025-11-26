@@ -9,45 +9,66 @@ import {
 } from "../ui/empty";
 import { Folder } from "lucide-react";
 import { JobCard } from "./JobCard";
+import { MainPagination } from "./MainPagination";
 
-async function getCompanyJobPostingData() {
-  const jobpostData = await prisma.jobPost.findMany({
-    where: {
-      status: "ACTIVE",
-    },
-    select: {
-      jobTitle: true,
-      id: true,
-      salaryFrom: true,
-      salaryTo: true,
-      employmentType: true,
-      location: true,
-      createAt: true,
-      Company: {
-        select: {
-          name: true,
-          logo: true,
-          location: true,
-          about: true,
+async function getCompanyJobPostingData(
+  page: number = 1,
+  pageSize: number = 2
+) {
+  const skip = (page - 1) * pageSize;
+
+  const [jobpostData, totalCount] = await Promise.all([
+    await prisma.jobPost.findMany({
+      where: {
+        status: "ACTIVE",
+      },
+      take: pageSize,
+      skip: skip,
+      select: {
+        jobTitle: true,
+        id: true,
+        salaryFrom: true,
+        salaryTo: true,
+        employmentType: true,
+        location: true,
+        createAt: true,
+        Company: {
+          select: {
+            name: true,
+            logo: true,
+            location: true,
+            about: true,
+          },
         },
       },
-    },
-    orderBy: {
-      createAt: "desc",
-    },
-  });
+      orderBy: {
+        createAt: "desc",
+      },
+    }),
 
-  return jobpostData;
+    await prisma.jobPost.count({
+      where: {
+        status: "ACTIVE",
+      },
+    }),
+  ]);
+
+  return {
+    jobpostData,
+    totalCount: Math.ceil(totalCount / pageSize),
+  };
 }
 
-export async function JobListingView() {
-  const jobPostingData = await getCompanyJobPostingData();
+export async function JobListingView({ currentPage }: { currentPage: number }) {
+  const { jobpostData, totalCount } = await getCompanyJobPostingData(
+    currentPage
+  );
 
   return (
     <>
-      {jobPostingData.length > 0 ? (
+      {jobpostData.length > 0 ? (
         <div className="flex flex-col gap-6">
-          {jobPostingData.map((jobPost) => (
+          {jobpostData.map((jobPost) => (
             <JobCard key={jobPost.id} jobData={jobPost} />
           ))}
         </div>
@@ -66,6 +87,10 @@ export async function JobListingView() {
           <EmptyContent></EmptyContent>
         </Empty>
       )}
+
+      <div className="flex justify-center mt-8">
+        <MainPagination totalPages={totalCount} currentPage={currentPage} />
+      </div>
     </>
   );
 }
