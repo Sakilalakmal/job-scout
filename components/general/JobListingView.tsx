@@ -16,10 +16,12 @@ async function getCompanyJobPostingData({
   page = 1,
   pageSize = 2,
   jobTypes = [],
+  location = "",
 }: {
   page: number;
   pageSize: number;
   jobTypes?: string[];
+  location?: string;
 }) {
   const skip = (page - 1) * pageSize;
 
@@ -30,6 +32,10 @@ async function getCompanyJobPostingData({
         in: jobTypes,
       },
     }),
+    ...(location &&
+      location !== "worldwide" && {
+        location: location,
+      }),
   };
 
   const [jobpostData, totalCount] = await Promise.all([
@@ -75,14 +81,17 @@ async function getCompanyJobPostingData({
 export async function JobListingView({
   currentPage,
   jobTypes,
+  location = "",
 }: {
   currentPage: number;
   jobTypes?: string[];
+  location?: string;
 }) {
   const { jobpostData, totalCount } = await getCompanyJobPostingData({
     page: currentPage,
     pageSize: 2,
     jobTypes: jobTypes || [],
+    location:location
   });
 
   return (
