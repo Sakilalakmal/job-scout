@@ -10,6 +10,8 @@ import { useEffect } from "react";
 export default function PaymentSuccessPage() {
   const { triggerConfetti } = useConfetti();
 
+  
+
   useEffect(() => {
     triggerConfetti();
   }, []);

@@ -1,9 +1,13 @@
+import { requiredUser } from "@/app/utils/required-user";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { X } from "lucide-react";
 import Link from "next/link";
 
-export default function PaymentCancelPage() {
+export default async function PaymentCancelPage() {
+
+  await requiredUser();
+
   return (
     <div className="w-full min-h-screen flex flex-1 justify-center items-center">
       <Card className="w-[350px]">
