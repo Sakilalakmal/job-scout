@@ -1,6 +1,5 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Section } from "lucide-react";
 
 export default function Loading() {
   return (

@@ -22,7 +22,6 @@ import {
   Undo,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { text } from "stream/consumers";
 import { Button } from "../ui/button";
 
 interface EditorMenuBarProps {

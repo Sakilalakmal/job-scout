@@ -35,7 +35,6 @@ import { Compass, Loader, X } from "lucide-react";
 import { JobListingDurationSelector } from "../general/JobListingDurationSelector";
 import { createJobPost } from "@/app/actions";
 import { useState } from "react";
-import { set } from "zod";
 import { toast } from "sonner";
 
 interface CreateJobPostFormProps {

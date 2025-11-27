@@ -1,6 +1,5 @@
 import { benefits } from "@/app/utils/List-of-company-benefits";
 import { Badge } from "../ui/badge";
-import { be } from "zod/v4/locales";
 import { ControllerRenderProps } from "react-hook-form";
 
 interface BenefitProps {

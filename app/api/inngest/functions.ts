@@ -49,7 +49,7 @@ export const sendPeriodicReport = inngest.createFunction(
   { id: "send-periodic-report" },
   { event: "report/generate" },
   async ({ event, step }) => {
-    const { userId, email } = event.data;
+    const { userId } = event.data;
 
     const totalDays = 30;
 

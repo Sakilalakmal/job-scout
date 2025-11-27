@@ -9,7 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { BanIcon, Folder } from "lucide-react";
+import { BanIcon } from "lucide-react";
 
 async function getFavAllJobPost(userId: string) {
   const data = await prisma.favoriteJobPosts.findMany({

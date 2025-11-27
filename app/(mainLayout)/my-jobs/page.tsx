@@ -33,7 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Ban, Copy, Folder, MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { Ban,MoreHorizontal, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 

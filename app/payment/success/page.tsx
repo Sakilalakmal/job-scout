@@ -10,11 +10,9 @@ import { useEffect } from "react";
 export default function PaymentSuccessPage() {
   const { triggerConfetti } = useConfetti();
 
-  
-
   useEffect(() => {
     triggerConfetti();
-  }, []);
+  }, [triggerConfetti]);
 
   return (
     <div className="w-full min-h-screen flex flex-1 justify-center items-center">
